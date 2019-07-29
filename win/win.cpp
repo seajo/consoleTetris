@@ -73,7 +73,7 @@ int turn_item_used=0;
 
 void title(void);
 void reset(void);
-void reset_main(void); //
+void reset_main(void);
 void reset_main_cpy(void);
 void draw_map(void);
 void draw_main(void);
@@ -145,8 +145,8 @@ int main() {
 }
 
 void title(void) {
-	int x = 5; //
-	int y = 4; //
+	int x = 5; // Initial x position
+	int y = 4; // Initial y position
 
 
 	gotoxy(x, y + 0); printf("┌──────────────────────────┐");
@@ -162,9 +162,8 @@ void title(void) {
 	gotoxy(x, y + 10); printf("  W   : Shift             ");
 	gotoxy(x, y + 11); printf("A   D : Left / Right Right");
 	gotoxy(x, y + 12); printf("  S   : Soft Drop         ");
-	gotoxy(x, y + 13); printf("Space : Hard Drop         ");
-	gotoxy(x, y + 15); printf("  P  : Pause              ");
-	gotoxy(x, y + 16); printf(" ESC : Quit               ");
+	gotoxy(x, y + 13); printf("  P   : Pause              ");
+	gotoxy(x, y + 14); printf(" ESC  : Quit               ");
 
 	while (true) {
 		if (_kbhit()) break;
@@ -233,8 +232,7 @@ void draw_map(void) { // Game Status
 	gotoxy(STATUS_X_ADJ, y + 6); printf("|             | ");
 	gotoxy(STATUS_X_ADJ, y + 7); printf("+-- -  -  - --+ ");
 	gotoxy(STATUS_X_ADJ, y + 8); printf("Player_score :");
-	gotoxy(STATUS_X_ADJ, STATUS_Y_SCORE = y + 9); printf("               %6d", p1_score);
-	//gotoxy(STATUS_X_ADJ, y + 10); printf("         %6d items", p1_item-p1_used_item);
+	gotoxy(STATUS_X_ADJ, STATUS_Y_SCORE = y + 9); printf("            %6d", p1_score);
 	gotoxy(STATUS_X_ADJ, y + 12);
 	{
 		SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),6);
@@ -244,10 +242,8 @@ void draw_map(void) { // Game Status
 	gotoxy(STATUS_X_ADJ, y + 13); printf("  W   : Shift       ");
 	gotoxy(STATUS_X_ADJ, y + 14); printf("A   D : Left / Right");
 	gotoxy(STATUS_X_ADJ, y + 15); printf("  S   : Soft Drop   ");
-	//gotoxy(STATUS_X_ADJ, y + 16); printf("  F   : Use Item    ");
-	gotoxy(STATUS_X_ADJ,STATUS_Y_SCORE+8);
-	gotoxy(STATUS_X_ADJ, y + 19); printf("    P  : Pause");
-	gotoxy(STATUS_X_ADJ, y + 20); printf("   ESC : Quit");
+	gotoxy(STATUS_X_ADJ, y + 16); printf("  P   : Pause");
+	gotoxy(STATUS_X_ADJ, y + 17); printf(" ESC  : Quit");
 	//   P   : Pause
 	//  ESC  : Quit
 
@@ -344,10 +340,6 @@ void check_key(void) {
 		case ESC:
 			system("cls");
 			exit(0);
-		//case 'F':
-		//case 'f':
-		//	use_item(1);
-		//	break;
 		case 'A':
 		case 'a':
 			if (check_crush(bx - 1, by, b_rotation) == true) move_block(LEFT);
@@ -397,8 +389,6 @@ void drop_block(void) {
 		crush_on = 0;
 		check_line();
 		new_block_on = 1;
-		/*if(turn_item_used!=0) use_item_pause();
-		return;*/
 	}
 	if (check_crush(bx, by + 1, b_rotation) == true) move_block(DOWN);
 	if (check_crush(bx, by + 1, b_rotation) == false) crush_on++;
@@ -518,11 +508,7 @@ void check_line(void) {
 		}
 		else i--;
 	}
-	//if(count>=2){
-	//	p1_item++;
-	//}
-	gotoxy(STATUS_X_ADJ, STATUS_Y_SCORE); printf("               %6d", p1_score);
-	//gotoxy(STATUS_X_ADJ, STATUS_Y_SCORE+1); printf("         %6d items", p1_item-p1_used_item);
+	gotoxy(STATUS_X_ADJ, STATUS_Y_SCORE); printf("            %6d", p1_score);
 }
 
 
@@ -579,7 +565,7 @@ void pause(void) {
 		for (j = 0; j<4; j++) {
 			if (blocks[b_type_next][0][i][j] == 1) {
 				gotoxy(MAIN_X + MAIN_X_ADJ + 3 + j, i + 6);
-				SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),2);
+				SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),6);
 				printf("■");
 				SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),7);
 			}
@@ -649,7 +635,6 @@ void use_item_pause(void){
 			break;
 	}
 	turn_item_used=0;
-	//다시 원래 걸로
 	{
 		system("cls");
 		reset_main_cpy();
@@ -660,7 +645,7 @@ void use_item_pause(void){
 			for (j = 0; j<4; j++) {
 				if (blocks[b_type_next][0][i][j] == 1) {
 					gotoxy(MAIN_X + MAIN_X_ADJ + 3 + j, i + 6);
-					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),2);
+					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),6);
 					printf("■");
 					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),7);
 				}
