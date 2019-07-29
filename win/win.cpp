@@ -1,4 +1,4 @@
-#include<stdio.h>
+Ôªø#include<stdio.h>
 #include<windows.h>
 #include<conio.h>
 #include<time.h>
@@ -15,13 +15,11 @@
 #define false 0
 #define true 1
 
-#define P2_ACTIVE_BLOCK -3
 #define ACTIVE_BLOCK -2 // Block State
 #define CEILLING -1
 #define EMPTY 0
 #define WALL 1
 #define INACTIVE_BLOCK 2
-#define P2_INACTIVE_BLOCK 3
 
 #define MAIN_X 11	// Game borad Size
 #define MAIN_Y 23
@@ -65,14 +63,9 @@ int key; // keyboard input
 int speed; // Game Speed
 
 int p1_score; // Game Score
-int p2_score;
 int p1_turn=0;
-int p2_turn=0;
 int p1_item=0;
-int p2_item=0;
 int p1_used_item=0;
-int p2_used_item=0;
-int turn=1;//√≥¿Ω «√∑π¿ÃæÓ
 int new_block_on = 0;
 int crush_on = 0;
 int turn_item_used=0;
@@ -145,25 +138,7 @@ int main() {
 
 		check_game_over();
 		if (new_block_on == 1){
-			if(turn==1){
-				p1_turn++;
-				turn=2;
-			}else{
-				p2_turn++;
-				turn=1;
-			}
-			gotoxy(STATUS_X_ADJ+16, 1); printf("P%d's turn",turn);if(turn==1) printf(" %d/30",p1_turn+1); else printf(" %d/30",p2_turn+1);
 			gotoxy(STATUS_X_ADJ,STATUS_Y_SCORE+8);
-			{
-				if(turn==1){
-					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),6);
-					printf("     °„°„°„                                ");
-				}else{
-					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),2);
-					printf("                             °„°„°„        ");
-				}
-				SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),7);
-			}
 			new_block();
 		}
 	}
@@ -174,39 +149,37 @@ void title(void) {
 	int y = 4; //
 
 
-	gotoxy(x, y + 0); printf("¶£¶°¶°¶°¶°¶°¶°¶°¶°¶°¶°¶°¶°¶°¶§");
-	gotoxy(x, y + 1); printf("¶¢                          ¶¢");
-	gotoxy(x, y + 2); printf("¶¢                          ¶¢");
-	gotoxy(x, y + 3); printf("¶¢                          ¶¢");
-	gotoxy(x, y + 4); printf("¶¶¶°¶°¶°¶°¶°¶°¶°¶°¶°¶°¶°¶°¶°¶•");
+	gotoxy(x, y + 0); printf("‚îå‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îê");
+	gotoxy(x, y + 1); printf("‚îÇ                          ‚îÇ");
+	gotoxy(x, y + 2); printf("‚îÇ                          ‚îÇ");
+	gotoxy(x, y + 3); printf("‚îÇ                          ‚îÇ");
+	gotoxy(x, y + 4); printf("‚îî‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îò");
 
 	gotoxy(x + 5, y + 2); printf("T E T R I S");
 	gotoxy(x, y + 7); printf("Please Enter Any Key to Start..");
 
-	gotoxy(x, y + 9); printf("<Player 1 : °‡>         <Player 2 : ¢√>");
-	gotoxy(x, y + 10); printf("  W   : Shift            °‚   : Shift");
-	gotoxy(x, y + 11); printf("A   D : Left / Right   ¢∑  ¢π : Left / Right");
-	gotoxy(x, y + 12); printf("  S   : Soft Drop        °‰   : Soft Drop");
-	gotoxy(x, y + 13); printf("  F   : Use Item         M    : Use Item");
-	gotoxy(x, y + 15); printf("  P  : Pause");
-	gotoxy(x, y + 16); printf(" ESC : Quit");
+	gotoxy(x, y + 9); printf("<Instruction>              ");
+	gotoxy(x, y + 10); printf("  W   : Shift             ");
+	gotoxy(x, y + 11); printf("A   D : Left / Right Right");
+	gotoxy(x, y + 12); printf("  S   : Soft Drop         ");
+	gotoxy(x, y + 13); printf("Space : Hard Drop         ");
+	gotoxy(x, y + 15); printf("  P  : Pause              ");
+	gotoxy(x, y + 16); printf(" ESC : Quit               ");
 
 	while (true) {
-		if (kbhit()) break;
+		if (_kbhit()) break;
 	}
 
-	while (kbhit()) getch();
+	while (_kbhit()) _getch();
 
 }
 
 void reset(void) {
 
 	p1_score = 0;
-	p2_score = 0;
 	key = 0;
 	crush_on = 0;
 	p1_turn = 0;
-	p2_turn = 0;
 	speed = 100;
 	timer = time(NULL);
 	system("cls");
@@ -253,41 +226,28 @@ void reset_main_cpy(void) {
 void draw_map(void) { // Game Status
 	int y = 3;
 
-	gotoxy(STATUS_X_ADJ+16, 1); printf("P%d's turn",turn); if(turn==1)printf(" %d/30",p1_turn+1); else printf(" %d/30",p2_turn+1);
 	gotoxy(STATUS_X_ADJ, y + 2); printf("+-  N E X T  -+ ");
 	gotoxy(STATUS_X_ADJ, y + 3); printf("|             | ");
 	gotoxy(STATUS_X_ADJ, y + 4); printf("|             | ");
 	gotoxy(STATUS_X_ADJ, y + 5); printf("|             | ");
 	gotoxy(STATUS_X_ADJ, y + 6); printf("|             | ");
 	gotoxy(STATUS_X_ADJ, y + 7); printf("+-- -  -  - --+ ");
-	gotoxy(STATUS_X_ADJ, y + 8); printf("P1_score :              P2_score :");
-	gotoxy(STATUS_X_ADJ, STATUS_Y_SCORE = y + 9); printf("               %6d                   %6d", p1_score, p2_score);
-	gotoxy(STATUS_X_ADJ, y + 10); printf("         %6d items             %6d items", p1_item-p1_used_item, p2_item-p2_used_item);
+	gotoxy(STATUS_X_ADJ, y + 8); printf("Player_score :");
+	gotoxy(STATUS_X_ADJ, STATUS_Y_SCORE = y + 9); printf("               %6d", p1_score);
+	//gotoxy(STATUS_X_ADJ, y + 10); printf("         %6d items", p1_item-p1_used_item);
 	gotoxy(STATUS_X_ADJ, y + 12);
 	{
 		SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),6);
-		printf("<Player 1>");
-		SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),2);
-		printf("             <Player 2>");
+		printf("<Player Key>");
 		SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),7);
 	}
-	gotoxy(STATUS_X_ADJ, y + 13); printf("  W   : Shift            °‚   : Shift");
-	gotoxy(STATUS_X_ADJ, y + 14); printf("A   D : Left / Right   ¢∑  ¢π : Left / Right");
-	gotoxy(STATUS_X_ADJ, y + 15); printf("  S   : Soft Drop        °‰   : Soft Drop");
-	gotoxy(STATUS_X_ADJ, y + 16); printf("  F   : Use Item         M    : Use Item");
+	gotoxy(STATUS_X_ADJ, y + 13); printf("  W   : Shift       ");
+	gotoxy(STATUS_X_ADJ, y + 14); printf("A   D : Left / Right");
+	gotoxy(STATUS_X_ADJ, y + 15); printf("  S   : Soft Drop   ");
+	//gotoxy(STATUS_X_ADJ, y + 16); printf("  F   : Use Item    ");
 	gotoxy(STATUS_X_ADJ,STATUS_Y_SCORE+8);
-	{
-		if(turn==1){
-			SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),6);
-			printf("     °„°„°„                                ");
-		}else{
-			SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),2);
-			printf("                             °„°„°„        ");
-		}
-		SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),7);
-	}
-	gotoxy(STATUS_X_ADJ, y + 19); printf("               P  : Pause");
-	gotoxy(STATUS_X_ADJ, y + 20); printf("              ESC : Quit");
+	gotoxy(STATUS_X_ADJ, y + 19); printf("    P  : Pause");
+	gotoxy(STATUS_X_ADJ, y + 20); printf("   ESC : Quit");
 	//   P   : Pause
 	//  ESC  : Quit
 
@@ -312,26 +272,16 @@ void draw_main(void) {
 					printf(". ");
 					break;
 				case WALL:
-					printf("¢Ã");
+					printf("‚ñ¶");
 					break;
 				case INACTIVE_BLOCK:
 					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),6);
-					printf("°‡");
+					printf("‚ñ°");
 					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),7);
 					break;
 				case ACTIVE_BLOCK:
 					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),6);
-					printf("°·");
-					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),7);
-					break;
-				case P2_ACTIVE_BLOCK:
-					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),2);
-					printf("°·");
-					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),7);
-					break;
-				case P2_INACTIVE_BLOCK:
-					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),2);
-					printf("°‡");
+					printf("‚ñ†");
 					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),7);
 					break;
 				}
@@ -359,11 +309,7 @@ void new_block(void) {
 	for (i = 0; i<4; i++) {
 		for (j = 0; j<4; j++) {
 			if (blocks[b_type][b_rotation][i][j] == 1){
-				if(turn==1){
-					main_org[by + i][bx + j] = ACTIVE_BLOCK;
-				}else{
-					main_org[by + i][bx + j] = P2_ACTIVE_BLOCK;
-				}
+				main_org[by + i][bx + j] = ACTIVE_BLOCK;
 			}
 		}
 	}
@@ -371,11 +317,8 @@ void new_block(void) {
 		for (j = 0; j<4; j++) {
 			if (blocks[b_type_next][0][i][j] == 1) {
 				gotoxy(STATUS_X_ADJ + 2 + j, i + 6);
-				if(turn==1)
-					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),2);
-				else
-					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),6);
-				printf("°·");
+				SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),6);
+				printf("‚ñ†");
 				SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),7);
 			}
 			else {
@@ -389,89 +332,42 @@ void new_block(void) {
 void check_key(void) {
 	key = 0;
 
-	if (kbhit()) {
-		key = getch();
-		if (key == 224) { // direction key
-			do { key = getch(); } while (key == 224);
-			if(turn==2){
-				//2«√∑π¿ÃæÓ ≈∞
-				switch (key) {
-				case LEFT:
-					if (check_crush(bx - 1, by, b_rotation) == true) move_block(LEFT);
-					break;
-				case RIGHT:
-					if (check_crush(bx + 1, by, b_rotation) == true) move_block(RIGHT);
-					break;
-				case DOWN:
-					if (check_crush(bx, by + 1, b_rotation) == true) move_block(DOWN);
-					break;
-				case UP:
-					if (check_crush(bx, by, (b_rotation + 1) % 4) == true) move_block(UP);
+	if (_kbhit()) {
+		key = _getch();
+		
+		switch (key) {
 
-					else if (crush_on == 1 && check_crush(bx, by - 1, (b_rotation + 1) % 4) == true) move_block(100);
-				}
-			}
-		}
-		else { // Not direction eky
-			if(turn==1){
-				switch (key) {
+		case 'P':
+		case 'p':
+			pause();
+			break;
+		case ESC:
+			system("cls");
+			exit(0);
+		//case 'F':
+		//case 'f':
+		//	use_item(1);
+		//	break;
+		case 'A':
+		case 'a':
+			if (check_crush(bx - 1, by, b_rotation) == true) move_block(LEFT);
+			break;
+		case 'D':
+		case 'd':
+			if (check_crush(bx + 1, by, b_rotation) == true) move_block(RIGHT);
+			break;
+		case 'S':
+		case 's':
+			if (check_crush(bx, by + 1, b_rotation) == true) move_block(DOWN);
+			break;
+		case 'w':
+		case 'W':
+			if (check_crush(bx, by, (b_rotation + 1) % 4) == true) move_block(UP);
 
-				case 'P':
-				case 'p':
-					pause();
-					break;
-				case ESC:
-					system("cls");
-					exit(0);
-				case 'F':
-				case 'f':
-					use_item(turn);
-					break;
-				case 'M':
-				case 'm':
-					use_item(2);
-					break;
-				case 'A':
-				case 'a':
-					if (check_crush(bx - 1, by, b_rotation) == true) move_block(LEFT);
-					break;
-				case 'D':
-				case 'd':
-					if (check_crush(bx + 1, by, b_rotation) == true) move_block(RIGHT);
-					break;
-				case 'S':
-				case 's':
-					if (check_crush(bx, by + 1, b_rotation) == true) move_block(DOWN);
-					break;
-				case 'w':
-				case 'W':
-					if (check_crush(bx, by, (b_rotation + 1) % 4) == true) move_block(UP);
-
-					else if (crush_on == 1 && check_crush(bx, by - 1, (b_rotation + 1) % 4) == true) move_block(100);
-				}
-			}else{
-				switch (key) {
-
-				case 'P':
-				case 'p':
-					pause();
-					break;
-				case ESC:
-					system("cls");
-					exit(0);
-				case 'M':
-				case 'm':
-					use_item(turn);
-					break;
-				case 'f':
-				case 'F':
-					use_item(1);
-					break;
-				}
-			}
+			else if (crush_on == 1 && check_crush(bx, by - 1, (b_rotation + 1) % 4) == true) move_block(100);
 		}
 	}
-	while (kbhit()) getch();
+	while (_kbhit()) _getch();
 }
 
 
@@ -493,20 +389,16 @@ void drop_block(void) {
 	if (crush_on&&check_crush(bx, by + 1, b_rotation) == false) {
 		for (i = 0; i<MAIN_Y; i++) {
 			for (j = 0; j<MAIN_X; j++) {
-				if (main_org[i][j] == ACTIVE_BLOCK||main_org[i][j]==P2_ACTIVE_BLOCK){
-					if(turn==1){
-						main_org[i][j] = INACTIVE_BLOCK;
-					}else{
-						main_org[i][j] = P2_INACTIVE_BLOCK;
-					}
+				if (main_org[i][j] == ACTIVE_BLOCK){
+					main_org[i][j] = INACTIVE_BLOCK;
 				}
 			}
 		}
 		crush_on = 0;
 		check_line();
 		new_block_on = 1;
-		if(turn_item_used!=0) use_item_pause();
-		return;
+		/*if(turn_item_used!=0) use_item_pause();
+		return;*/
 	}
 	if (check_crush(bx, by + 1, b_rotation) == true) move_block(DOWN);
 	if (check_crush(bx, by + 1, b_rotation) == false) crush_on++;
@@ -526,11 +418,7 @@ void move_block(int dir) {
 		for (i = 0; i<4; i++) {
 			for (j = 0; j<4; j++) {
 				if (blocks[b_type][b_rotation][i][j] == 1){
-					if(turn==1){
-						main_org[by + i][bx + j-1] = ACTIVE_BLOCK;
-					}else{
-						main_org[by + i][bx + j-1] = P2_ACTIVE_BLOCK;
-					}
+					main_org[by + i][bx + j-1] = ACTIVE_BLOCK;
 				}
 			}
 		}
@@ -546,11 +434,7 @@ void move_block(int dir) {
 		for (i = 0; i<4; i++) {
 			for (j = 0; j<4; j++) {
 				if (blocks[b_type][b_rotation][i][j] == 1){
-					if(turn==1){
-						main_org[by + i][bx + j+1] = ACTIVE_BLOCK;
-					}else{
-						main_org[by + i][bx + j+1] = P2_ACTIVE_BLOCK;
-					}
+					main_org[by + i][bx + j+1] = ACTIVE_BLOCK;
 				}
 			}
 		}
@@ -566,11 +450,7 @@ void move_block(int dir) {
 		for (i = 0; i<4; i++) {
 			for (j = 0; j<4; j++) {
 				if (blocks[b_type][b_rotation][i][j] == 1){
-					if(turn==1){
-						main_org[by + i + 1][bx + j] = ACTIVE_BLOCK;
-					}else{
-						main_org[by + i + 1][bx + j] = P2_ACTIVE_BLOCK;
-					}
+					main_org[by + i + 1][bx + j] = ACTIVE_BLOCK;
 				}
 			}
 		}
@@ -587,11 +467,7 @@ void move_block(int dir) {
 		for (i = 0; i<4; i++) {
 			for (j = 0; j<4; j++) {
 				if (blocks[b_type][b_rotation][i][j] == 1){
-					if(turn==1){
-						main_org[by + i][bx + j] = ACTIVE_BLOCK;
-					}else{
-						main_org[by + i][bx + j] = P2_ACTIVE_BLOCK;
-					}
+					main_org[by + i][bx + j] = ACTIVE_BLOCK;
 				}
 			}
 		}
@@ -608,11 +484,7 @@ void move_block(int dir) {
 		for (i = 0; i<4; i++) {
 			for (j = 0; j<4; j++) {
 				if (blocks[b_type][b_rotation][i][j] == 1){
-					if(turn==1){
-						main_org[by + i - 1][bx + j] = ACTIVE_BLOCK;
-					}else{
-						main_org[by + i - 1][bx + j] = P2_ACTIVE_BLOCK;
-					}
+					main_org[by + i - 1][bx + j] = ACTIVE_BLOCK;
 				}
 			}
 		}
@@ -634,10 +506,7 @@ void check_line(void) {
 		}
 		if (block_amount == MAIN_X - 2) {
 			count++;
-			if(turn==1)
-				p1_score += 1 ;
-			else
-				p2_score +=1;
+			p1_score += 1 ;
 
 			for (k = i; k>1; k--) {  // Block Down
 				for (l = 1; l<MAIN_X - 1; l++) {
@@ -649,16 +518,11 @@ void check_line(void) {
 		}
 		else i--;
 	}
-	if(count>=2){
-		if(turn==1){
-			p1_item++;
-		}else{
-			p2_item	++;
-		}
-	}
-	gotoxy(STATUS_X_ADJ, STATUS_Y_SCORE); printf("               %6d                   %6d", p1_score, p2_score);
-	gotoxy(STATUS_X_ADJ, STATUS_Y_SCORE+1); printf("         %6d items             %6d items", p1_item-p1_used_item, p2_item-p2_used_item);
-
+	//if(count>=2){
+	//	p1_item++;
+	//}
+	gotoxy(STATUS_X_ADJ, STATUS_Y_SCORE); printf("               %6d", p1_score);
+	//gotoxy(STATUS_X_ADJ, STATUS_Y_SCORE+1); printf("         %6d items", p1_item-p1_used_item);
 }
 
 
@@ -672,29 +536,18 @@ void check_game_over(void) {
    	struct tm *t;
    	t = localtime(&timer);
 	for (i = 1; i<MAIN_X - 2; i++) {
-		if (main_org[3][i]>0||(p2_turn>=30||p1_turn>=30)) {  // end condition
-			gotoxy(x, y + 0); printf("¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«");
-			gotoxy(x, y + 1); printf("¢«                              ¢«");
-			gotoxy(x, y + 2); printf("¢«  +-----------------------+   ¢«");
-			gotoxy(x, y + 3); printf("¢«  |  G A M E  O V E R..   |   ¢«");
-			gotoxy(x, y + 4); printf("¢«  +-----------------------+   ¢«");
-			gotoxy(x, y + 5); printf("¢«   P1   SCORE: %6d         ¢«", p1_score);
-			gotoxy(x, y + 6); printf("¢«   P2   SCORE: %6d         ¢«", p2_score);
-			gotoxy(x, y + 7); if(p1_score>p2_score) printf("¢«  Player 1 is the winner!!!!  ¢«"); else printf("¢«  Player 2 is the winner!!!!  ¢«");
-			gotoxy(x, y + 8); printf("¢«  Press any key to restart..  ¢«");
-			gotoxy(x, y + 9); printf("¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«");
-			{
-				fo=fopen("game_result.txt","a");
-				fprintf(fo, "\nStart Time : %d.%d.%d %d:%d:%d\n", t->tm_year+1900, t->tm_mon+1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec);
-				fprintf(fo,"<Player 1>            <Player 2>\n");
-				fprintf(fo,"Score : %6d         Score : %6d\n", p1_score, p2_score);
-				fprintf(fo,"Obtained : %3d      Obtained : %3d\n", p1_item, p2_item);
-				fprintf(fo,"Used : %7d         Used : %7d\n", p1_used_item, p2_used_item);
-				fclose(fo);
-			}
+		if (main_org[3][i]>0||p1_turn>=30) {  // end condition
+			gotoxy(x, y + 0); printf("‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§");
+			gotoxy(x, y + 1); printf("‚ñ§                              ‚ñ§");
+			gotoxy(x, y + 2); printf("‚ñ§  +-----------------------+   ‚ñ§");
+			gotoxy(x, y + 3); printf("‚ñ§  |  G A M E  O V E R..   |   ‚ñ§");
+			gotoxy(x, y + 4); printf("‚ñ§  +-----------------------+   ‚ñ§");
+			gotoxy(x, y + 5); printf("‚ñ§   P1   SCORE: %6d         ‚ñ§", p1_score);
+			gotoxy(x, y + 8); printf("‚ñ§  Press any key to restart..  ‚ñ§");
+			gotoxy(x, y + 9); printf("‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§");
 			Sleep(1000);
-			while (kbhit()) getch();
-			key = getch();
+			while (_kbhit()) _getch();
+			key = _getch();
 			reset();
 		}
 	}
@@ -706,16 +559,16 @@ void pause(void) {
 	int x = 5;
 	int y = 5;
 	
-	gotoxy(x, y + 0); printf("¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«");
-	gotoxy(x, y + 1); printf("¢«                              ¢«");
-	gotoxy(x, y + 2); printf("¢«  +-----------------------+   ¢«");
-	gotoxy(x, y + 3); printf("¢«  |       P A U S E       |   ¢«");
-	gotoxy(x, y + 4); printf("¢«  +-----------------------+   ¢«");
-	gotoxy(x, y + 5); printf("¢«  Press any key to resume..   ¢«");
-	gotoxy(x, y + 6); printf("¢«                              ¢«");
-	gotoxy(x, y + 7); printf("¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«");
+	gotoxy(x, y + 0); printf("‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§");
+	gotoxy(x, y + 1); printf("‚ñ§                              ‚ñ§");
+	gotoxy(x, y + 2); printf("‚ñ§  +-----------------------+   ‚ñ§");
+	gotoxy(x, y + 3); printf("‚ñ§  |       P A U S E       |   ‚ñ§");
+	gotoxy(x, y + 4); printf("‚ñ§  +-----------------------+   ‚ñ§");
+	gotoxy(x, y + 5); printf("‚ñ§  Press any key to resume..   ‚ñ§");
+	gotoxy(x, y + 6); printf("‚ñ§                              ‚ñ§");
+	gotoxy(x, y + 7); printf("‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§");
 
-	getch();
+	_getch();
 
 	system("cls");
 	reset_main_cpy();
@@ -726,11 +579,8 @@ void pause(void) {
 		for (j = 0; j<4; j++) {
 			if (blocks[b_type_next][0][i][j] == 1) {
 				gotoxy(MAIN_X + MAIN_X_ADJ + 3 + j, i + 6);
-				if(turn==1)
-					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),2);
-				else
-					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),6);
-				printf("°·");
+				SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),2);
+				printf("‚ñ†");
 				SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),7);
 			}
 			else {
@@ -749,12 +599,6 @@ void use_item(int player){
 			printf("Item!");
 			p1_used_item++;
 			turn_item_used=1;
-		}else if(player==2&&p2_item-p2_used_item>0){
-			SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),2);
-			gotoxy(STATUS_X_ADJ+18,STATUS_Y_SCORE+8);
-			printf("Item!");
-			p2_used_item++;
-			turn_item_used=2;
 		}
 		SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),7);
 	}
@@ -769,25 +613,24 @@ void use_item_pause(void){
 	int t1;
 	int input;
 	{	
-		gotoxy(x, y + 0); printf("¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«");
-		gotoxy(x, y + 1); printf("¢«                                                  ¢«");
-		gotoxy(x, y + 2); printf("¢«              <Item used!!>                       ¢«");
-		gotoxy(x, y + 3); printf("¢«  Choose next block!                              ¢«");
-		gotoxy(x, y + 4); printf("¢«  1. °·     2. °·°·    3.  °·      4. °·          ¢«");
-		gotoxy(x, y + 5); printf("¢«     °·        °·°·      °·°·°·       °·°·        ¢«");
-		gotoxy(x, y + 6); printf("¢«     °·                                 °·        ¢«");
-		gotoxy(x, y + 7); printf("¢«     °·                                           ¢«");
-		gotoxy(x, y + 8); printf("¢«                                                  ¢«");
-		gotoxy(x, y + 9); printf("¢«                                                  ¢«");
-		gotoxy(x, y + 10); printf("¢«                                                  ¢«");
-		gotoxy(x, y + 11); printf("¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«¢«");
+		gotoxy(x, y + 0); printf("‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§");
+		gotoxy(x, y + 1); printf("‚ñ§                                                  ‚ñ§");
+		gotoxy(x, y + 2); printf("‚ñ§              <Item used!!>                       ‚ñ§");
+		gotoxy(x, y + 3); printf("‚ñ§  Choose next block!                              ‚ñ§");
+		gotoxy(x, y + 4); printf("‚ñ§  1. ‚ñ†     2. ‚ñ†‚ñ†    3.  ‚ñ†      4. ‚ñ†          ‚ñ§");
+		gotoxy(x, y + 5); printf("‚ñ§     ‚ñ†        ‚ñ†‚ñ†      ‚ñ†‚ñ†‚ñ†       ‚ñ†‚ñ†        ‚ñ§");
+		gotoxy(x, y + 6); printf("‚ñ§     ‚ñ†                                 ‚ñ†        ‚ñ§");
+		gotoxy(x, y + 7); printf("‚ñ§     ‚ñ†                                           ‚ñ§");
+		gotoxy(x, y + 8); printf("‚ñ§                                                  ‚ñ§");
+		gotoxy(x, y + 9); printf("‚ñ§                                                  ‚ñ§");
+		gotoxy(x, y + 10); printf("‚ñ§                                                  ‚ñ§");
+		gotoxy(x, y + 11); printf("‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§‚ñ§");
 	}
-	gotoxy(x+2,y+2);printf("Player %d", turn_item_used);
-	while(!kbhit()&&((t1=time(NULL))-t0)<5){
+	while(!_kbhit()&&((t1=time(NULL))-t0)<5){
 		gotoxy(x+3,y+10); printf("%d seconds left.",5-(t1-t0));
 	}
-	input=getch();
-	while (kbhit()) getch();
+	input=_getch();
+	while (_kbhit()) _getch();
 	switch(input){
 		case '1':
 		
@@ -806,7 +649,7 @@ void use_item_pause(void){
 			break;
 	}
 	turn_item_used=0;
-	//¥ŸΩ√ ø¯∑° ∞…∑Œ
+	//Îã§Ïãú ÏõêÎûò Í±∏Î°ú
 	{
 		system("cls");
 		reset_main_cpy();
@@ -817,11 +660,8 @@ void use_item_pause(void){
 			for (j = 0; j<4; j++) {
 				if (blocks[b_type_next][0][i][j] == 1) {
 					gotoxy(MAIN_X + MAIN_X_ADJ + 3 + j, i + 6);
-					if(turn==1)
-						SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),2);
-					else
-						SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),6);
-					printf("°·");
+					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),2);
+					printf("‚ñ†");
 					SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),7);
 				}
 				else {

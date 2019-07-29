@@ -50,3 +50,6 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+CppProperties.json
+.vs
+/win/Debug
