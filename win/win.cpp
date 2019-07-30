@@ -159,7 +159,7 @@ void title(void) {
 	gotoxy(x, y + 7); printf("Please Enter Any Key to Start..");
 
 	gotoxy(x, y + 9); printf("<Instruction>              ");
-	gotoxy(x, y + 10); printf("  W   : Shift             ");
+	gotoxy(x, y + 10); printf("  W   : Rotate            ");
 	gotoxy(x, y + 11); printf("A   D : Left / Right Right");
 	gotoxy(x, y + 12); printf("  S   : Soft Drop         ");
 	gotoxy(x, y + 13); printf("  P   : Pause              ");
@@ -239,7 +239,7 @@ void draw_map(void) { // Game Status
 		printf("<Player Key>");
 		SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ),7);
 	}
-	gotoxy(STATUS_X_ADJ, y + 13); printf("  W   : Shift       ");
+	gotoxy(STATUS_X_ADJ, y + 13); printf("  W   : Rotate      ");
 	gotoxy(STATUS_X_ADJ, y + 14); printf("A   D : Left / Right");
 	gotoxy(STATUS_X_ADJ, y + 15); printf("  S   : Soft Drop   ");
 	gotoxy(STATUS_X_ADJ, y + 16); printf("  P   : Pause");
