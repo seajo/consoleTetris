@@ -11,6 +11,7 @@
 #define p 112
 #define P 80
 #define ESC 27
+#define SPACE 32
 
 #define false 0
 #define true 1
@@ -33,7 +34,7 @@ int STATUS_Y_GOAL; // Status info position
 int STATUS_Y_SCORE;
 
 int blocks[7][4][4][4] = {
-	{ { 0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0 },{ 0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0 },
+	{ {0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0},{ 0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0 },
 	{ 0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0 },{ 0,0,0,0,0,1,1,0,0,1,1,0,0,0,0,0 } },
 	{ { 0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0 },{ 0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0 },
 	{ 0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0 },{ 0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0 } },
@@ -82,6 +83,7 @@ void check_key(void);
 
 int check_crush(int bx, int by, int rotation);
 void drop_block(void);
+void hard_drop_block(void);
 void move_block(int dir);
 void check_line(void);
 
@@ -125,6 +127,7 @@ int main() {
 
 	reset();
 	
+
 	while (1) {
 		for (i = 0; i<5; i++) {
 			check_key();
@@ -162,8 +165,9 @@ void title(void) {
 	gotoxy(x, y + 10); printf("  W   : Rotate            ");
 	gotoxy(x, y + 11); printf("A   D : Left / Right Right");
 	gotoxy(x, y + 12); printf("  S   : Soft Drop         ");
-	gotoxy(x, y + 13); printf("  P   : Pause              ");
-	gotoxy(x, y + 14); printf(" ESC  : Quit               ");
+	gotoxy(x, y + 13); printf("Space : Hard Drop");
+	gotoxy(x, y + 14); printf("  P   : Pause              ");
+	gotoxy(x, y + 15); printf(" ESC  : Quit               ");
 
 	while (true) {
 		if (_kbhit()) break;
@@ -242,8 +246,9 @@ void draw_map(void) { // Game Status
 	gotoxy(STATUS_X_ADJ, y + 13); printf("  W   : Rotate      ");
 	gotoxy(STATUS_X_ADJ, y + 14); printf("A   D : Left / Right");
 	gotoxy(STATUS_X_ADJ, y + 15); printf("  S   : Soft Drop   ");
-	gotoxy(STATUS_X_ADJ, y + 16); printf("  P   : Pause");
-	gotoxy(STATUS_X_ADJ, y + 17); printf(" ESC  : Quit");
+	gotoxy(STATUS_X_ADJ, y + 16); printf("Space : Hard Drop");
+	gotoxy(STATUS_X_ADJ, y + 18); printf("  P   : Pause");
+	gotoxy(STATUS_X_ADJ, y + 19); printf(" ESC  : Quit");
 	//   P   : Pause
 	//  ESC  : Quit
 
@@ -352,6 +357,9 @@ void check_key(void) {
 		case 's':
 			if (check_crush(bx, by + 1, b_rotation) == true) move_block(DOWN);
 			break;
+		case SPACE:
+			if (check_crush(bx, by + 1, b_rotation) == true) hard_drop_block();
+			break;
 		case 'w':
 		case 'W':
 			if (check_crush(bx, by, (b_rotation + 1) % 4) == true) move_block(UP);
@@ -391,9 +399,25 @@ void drop_block(void) {
 		new_block_on = 1;
 	}
 	if (check_crush(bx, by + 1, b_rotation) == true) move_block(DOWN);
-	if (check_crush(bx, by + 1, b_rotation) == false) crush_on++;
+	if (check_crush(bx, by + 1, b_rotation) == false) crush_on=1;
 }
 
+void hard_drop_block(void) {
+	int i, j;
+	while (check_crush(bx, by + 1, b_rotation) == true) {
+		move_block(DOWN);
+	}
+	for (i = 0; i < MAIN_Y; i++) {
+		for (j = 0; j < MAIN_X; j++) {
+			if (main_org[i][j] == ACTIVE_BLOCK) {
+				main_org[i][j] = INACTIVE_BLOCK;
+			}
+		}
+	}
+	crush_on = 0;
+	check_line();
+	new_block_on = 1;
+}
 
 void move_block(int dir) {
 	int i, j;
@@ -515,7 +539,6 @@ void check_line(void) {
 
 void check_game_over(void) {
 	int i;
-	FILE *fo;
 	int x = 5;
 	int y = 5;
 	
@@ -529,6 +552,8 @@ void check_game_over(void) {
 			gotoxy(x, y + 3); printf("▤  |  G A M E  O V E R..   |   ▤");
 			gotoxy(x, y + 4); printf("▤  +-----------------------+   ▤");
 			gotoxy(x, y + 5); printf("▤   P1   SCORE: %6d         ▤", p1_score);
+			gotoxy(x, y + 6); printf("▤                              ▤");
+			gotoxy(x, y + 7); printf("▤                              ▤");
 			gotoxy(x, y + 8); printf("▤  Press any key to restart..  ▤");
 			gotoxy(x, y + 9); printf("▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤");
 			Sleep(1000);
