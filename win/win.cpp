@@ -529,6 +529,8 @@ void check_game_over(void) {
 			gotoxy(x, y + 3); printf("▤  |  G A M E  O V E R..   |   ▤");
 			gotoxy(x, y + 4); printf("▤  +-----------------------+   ▤");
 			gotoxy(x, y + 5); printf("▤   P1   SCORE: %6d         ▤", p1_score);
+			gotoxy(x, y + 6); printf("▤                              ▤");
+			gotoxy(x, y + 7); printf("▤                              ▤");
 			gotoxy(x, y + 8); printf("▤  Press any key to restart..  ▤");
 			gotoxy(x, y + 9); printf("▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤▤");
 			Sleep(1000);
